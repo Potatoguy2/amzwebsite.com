@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="Az_P515k4iEv_GJ_000gEP08vxpmSPnoau6IsnuD7Rw" />
+    <title>Amz Animated Background</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000; /* Set a dark background */
+            overflow: hidden; /* Prevent scrolling */
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        h1 {
+            position: relative;
+            z-index: 1;
+        }
+
+        .link-container {
+            position: relative;
+            z-index: 1;
+            margin-top: 50px;
+        }
+
+        .link-container img {
+            border: 3px solid white;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .link-container img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome to Amz's Website!</h1>
+    <canvas id="background"></canvas>
+
+    <div class="link-container">
+        <a href="https://7amz-shop.fourthwall.com/" target="_blank" title="Visit Amz Merch Store">
+            <img src="/images/merch.png" height="300" alt="Amz Merch Website">
+        </a>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('background');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray = [];
+        let globalOffsetX = 0;
+        let globalOffsetY = 0;
+
+        // Create Particle
+        class Particle {
+            constructor(x, y, size, speedX, speedY, color) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.speedX = speedX;
+                this.speedY = speedY;
+                this.color = color;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update() {
+                // Move particle
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Wrap particles around when they go out of bounds
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+        }
+
+        // Initialize Particles
+        function init() {
+            particlesArray = [];
+            for (let i = 0; i < 100; i++) {
+                const size = Math.random() * 5 + 2; // Random size between 2 and 7
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const speedX = (Math.random() - 0.5) * 2; // Random horizontal speed
+                const speedY = (Math.random() - 0.5) * 2; // Random vertical speed
+                const color = `rgba(255,255,255,${Math.random()})`; // Random white color with transparency
+                particlesArray.push(new Particle(x, y, size, speedX, speedY, color));
+            }
+        }
+
+        // Animate Particles
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+
+            particlesArray.forEach((particle) => {
+                particle.update();
+                particle.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+
+        // Start Animation
+        init();
+        animate();
+    </script>
+</body>
+
+</html>
